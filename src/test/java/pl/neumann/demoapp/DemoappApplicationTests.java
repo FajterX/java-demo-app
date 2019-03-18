@@ -28,7 +28,7 @@ public class DemoappApplicationTests {
 		ResponseEntity<String> response = httpClient.getForEntity(url, String.class);
 		//then
 		Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(200);
-		Assertions.assertThat(response.getBody()).isEqualTo("Hello World");
+		Assertions.assertThat(response.getBody()).isEqualTo("Hello World!");
 	}
 
 }
