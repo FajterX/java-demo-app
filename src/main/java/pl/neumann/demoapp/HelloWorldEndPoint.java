@@ -9,6 +9,6 @@ public class HelloWorldEndPoint {
 
     @RequestMapping(path = "/hello", method = RequestMethod.GET)
     String hello() {
-        return "Hello World!";
+        return "Hello Heroku World!";
     }
 }
