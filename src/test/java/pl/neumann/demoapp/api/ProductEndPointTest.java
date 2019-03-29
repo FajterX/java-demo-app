@@ -44,6 +44,18 @@ public class ProductEndPointTest extends DemoappApplicationTests {
     }
 
     @Test
+    public void shouldRemoveExistingProduct() {
+        ProductRequestDto dto = new ProductRequestDto("produkt");
+        ProductResponseDto existingProduct = productFacade.create(dto);
+        final String url = "http://localhost:" + port + "/products/" + existingProduct.getId();
+
+        ResponseEntity<ProductResponseDto> result = httpClient.exchange(url, HttpMethod.DELETE, null, ProductResponseDto.class);
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(200);
+        assertThat(result.getBody()).isEqualTo(existingProduct);
+    }
+
+    @Test
     public void shouldGetNotExistingProduct() {
         final String url = "http://localhost:" + port + "/products/-1";
 

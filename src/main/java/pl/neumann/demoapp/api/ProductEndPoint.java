@@ -35,8 +35,16 @@ class ProductEndPoint {
     @PutMapping("/{id}")
     ResponseEntity<ProductResponseDto> updateProduct(@PathVariable("id") String id, @RequestBody ProductRequestDto productRequestDto) {
         try {
-            System.out.println(productRequestDto.getName());
             return new ResponseEntity<>(productFacade.update(id, productRequestDto), HttpStatus.OK);
+        } catch (NullPointerException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ProductResponseDto> deleteProduct(@PathVariable("id") String id) {
+        try {
+            return new ResponseEntity<>(productFacade.delete(id), HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }

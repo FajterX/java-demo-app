@@ -25,4 +25,9 @@ public class inMemoryProductRepository implements ProductRepository {
     public Product update(String id, Product updatedProduct) {
         return products.replace(id, updatedProduct);
     }
+
+    @Override
+    public Product remove(String id) {
+        return products.remove(id);
+    }
 }

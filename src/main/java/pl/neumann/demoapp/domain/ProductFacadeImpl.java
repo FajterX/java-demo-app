@@ -53,4 +53,10 @@ class ProductFacadeImpl implements ProductFacade {
 
         return new ProductResponseDto(product.getId(), product.getName());
     }
+
+    @Override
+    public ProductResponseDto delete(String id) {
+        Product product = this.productRepository.remove(id);
+        return new ProductResponseDto(product.getId(), product.getName());
+    }
 }

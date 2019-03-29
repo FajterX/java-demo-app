@@ -8,4 +8,6 @@ public interface ProductRepository {
     Product findById(String id);
 
     Product update(String id, Product updatedProduct);
+
+    Product remove(String id);
 }

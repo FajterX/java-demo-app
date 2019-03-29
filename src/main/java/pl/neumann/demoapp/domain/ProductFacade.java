@@ -10,5 +10,7 @@ public interface ProductFacade {
 
     // update
     ProductResponseDto update(String id, ProductRequestDto productRequestDto);
+
     // delete
+    ProductResponseDto delete(String id);
 }
