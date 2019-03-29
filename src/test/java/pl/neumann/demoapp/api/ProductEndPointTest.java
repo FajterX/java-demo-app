@@ -42,6 +42,15 @@ public class ProductEndPointTest extends DemoappApplicationTests {
         assertThat(result.getBody()).isEqualTo(existingProduct);
     }
 
+    @Test
+    public void shouldGetNotExistingProduct() {
+        final String url = "http://localhost:" + port + "/products/-1";
+
+        ResponseEntity<ProductResponseDto> result = httpClient.getForEntity(url, ProductResponseDto.class);
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(404);
+    }
+
     String mapToJson (ProductRequestDto productRequestDto) {
         try {
             return objectMapper.writeValueAsString(productRequestDto);
