@@ -40,4 +40,17 @@ class ProductFacadeImpl implements ProductFacade {
 
         return response;
     }
+
+    @Override
+    public ProductResponseDto update(String id, ProductRequestDto productRequestDto) {
+        if (!productRequestDto.isValid()) {
+            throw new RuntimeException("Product name cannot be empty!");
+        }
+
+        Product product = this.productRepository.findById(id);
+        product.setName(productRequestDto.getName());
+        product = this.productRepository.update(id, product);
+
+        return new ProductResponseDto(product.getId(), product.getName());
+    }
 }

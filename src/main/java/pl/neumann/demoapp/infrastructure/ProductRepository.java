@@ -6,4 +6,6 @@ public interface ProductRepository {
     void save(Product product);
 
     Product findById(String id);
+
+    Product update(String id, Product updatedProduct);
 }

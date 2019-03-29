@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import pl.neumann.demoapp.DemoappApplicationTests;
 import pl.neumann.demoapp.domain.ProductFacade;
@@ -49,6 +50,20 @@ public class ProductEndPointTest extends DemoappApplicationTests {
         ResponseEntity<ProductResponseDto> result = httpClient.getForEntity(url, ProductResponseDto.class);
 
         assertThat(result.getStatusCodeValue()).isEqualTo(404);
+    }
+
+    @Test
+    public void shouldUpdateProduct() {
+        ProductRequestDto dto = new ProductRequestDto("produkt");
+        ProductResponseDto existingProduct = productFacade.create(dto);
+        final String url = "http://localhost:" + port + "/products/" + existingProduct.getId();
+        ProductRequestDto updatedProduct = new ProductRequestDto("newProdukt");
+        String productJson  = mapToJson(updatedProduct);
+
+        ResponseEntity<ProductResponseDto> result = httpClient.exchange(url, HttpMethod.PUT, getHttpRequest(productJson), ProductResponseDto.class);
+
+        assertThat(result.getStatusCodeValue()).isEqualTo(200);
+        assertThat(result.getBody().getName()).isEqualTo(updatedProduct.getName());
     }
 
     String mapToJson (ProductRequestDto productRequestDto) {
