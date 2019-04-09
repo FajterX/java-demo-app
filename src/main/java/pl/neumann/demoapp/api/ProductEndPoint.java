@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.neumann.demoapp.Exceptions.ProductNotFoundException;
 import pl.neumann.demoapp.domain.ProductFacade;
+import pl.neumann.demoapp.domain.ProductListResponseDto;
 import pl.neumann.demoapp.domain.ProductRequestDto;
 import pl.neumann.demoapp.domain.ProductResponseDto;
 
@@ -49,5 +50,10 @@ class ProductEndPoint {
         } catch (ProductNotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping
+    ProductListResponseDto getProducts() {
+        return productFacade.findAll();
     }
 }

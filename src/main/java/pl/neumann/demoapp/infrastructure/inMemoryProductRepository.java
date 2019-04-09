@@ -3,6 +3,7 @@ package pl.neumann.demoapp.infrastructure;
 import org.springframework.stereotype.Repository;
 import pl.neumann.demoapp.domain.Product;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,5 +30,10 @@ class inMemoryProductRepository implements ProductRepository {
     @Override
     public Product remove(String id) {
         return products.remove(id);
+    }
+
+    @Override
+    public Collection<Product> findAll() {
+        return products.values();
     }
 }

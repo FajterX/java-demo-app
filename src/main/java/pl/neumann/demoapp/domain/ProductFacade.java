@@ -10,4 +10,6 @@ public interface ProductFacade {
     ProductResponseDto update(String id, ProductRequestDto productRequestDto) throws ProductNotFoundException;
 
     ProductResponseDto delete(String id) throws ProductNotFoundException;
+
+    ProductListResponseDto findAll();
 }

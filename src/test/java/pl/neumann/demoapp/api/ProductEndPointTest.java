@@ -7,13 +7,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import pl.neumann.demoapp.DemoappApplicationTests;
 import pl.neumann.demoapp.domain.ProductFacade;
+import pl.neumann.demoapp.domain.ProductListResponseDto;
 import pl.neumann.demoapp.domain.ProductRequestDto;
 import pl.neumann.demoapp.domain.ProductResponseDto;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ProductEndPointTest extends DemoappApplicationTests {
 
     @Autowired
@@ -93,6 +96,27 @@ public class ProductEndPointTest extends DemoappApplicationTests {
         //then
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody().getName()).isEqualTo(updatedProduct.getName());
+    }
+
+    @Test
+    public void shouldGetAllProducts() {
+        //given
+        ProductRequestDto dto = new ProductRequestDto("produkt");
+        ProductResponseDto existingProduct = productFacade.create(dto);
+        dto = new ProductRequestDto("produkt");
+        ProductResponseDto existingProduct2 = productFacade.create(dto);
+        final String url = "http://localhost:" + port + "/products/";
+
+        //when
+        ResponseEntity<ProductListResponseDto> result = httpClient.getForEntity(url, ProductListResponseDto.class);
+
+        //then
+        assertThat(result.getStatusCodeValue()).isEqualTo(200);
+        assertThat(result.getBody().getProducts().size()).isEqualTo(2);
+        assertThat(result.getBody().getProducts().stream()
+                .filter(productResponseDto -> productResponseDto.getId().equals(existingProduct.getId()))).isNotEmpty();
+        assertThat(result.getBody().getProducts().stream()
+                .filter(productResponseDto -> productResponseDto.getId().equals(existingProduct2.getId()))).isNotEmpty();
     }
 
     String mapToJson (ProductRequestDto productRequestDto) {

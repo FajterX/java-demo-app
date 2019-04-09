@@ -5,6 +5,9 @@ import pl.neumann.demoapp.Exceptions.ProductNotFoundException;
 import pl.neumann.demoapp.infrastructure.ProductRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -68,5 +71,15 @@ class ProductFacadeImpl implements ProductFacade {
             throw new ProductNotFoundException();
 
         return new ProductResponseDto(product.getId(), product.getName());
+    }
+
+    @Override
+    public ProductListResponseDto findAll() {
+        Collection<Product> allProducts = productRepository.findAll();
+        List<ProductResponseDto> productResponseDtoList = new ArrayList<>();
+        for (Product product: allProducts) 
+            productResponseDtoList.add(new ProductResponseDto(product.getId(), product.getName()));
+
+        return new ProductListResponseDto(productResponseDtoList);
     }
 }
