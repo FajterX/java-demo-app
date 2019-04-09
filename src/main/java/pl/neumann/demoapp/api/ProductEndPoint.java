@@ -3,6 +3,7 @@ package pl.neumann.demoapp.api;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.neumann.demoapp.Exceptions.ProductNotFoundException;
 import pl.neumann.demoapp.domain.ProductFacade;
 import pl.neumann.demoapp.domain.ProductRequestDto;
 import pl.neumann.demoapp.domain.ProductResponseDto;
@@ -17,7 +18,7 @@ class ProductEndPoint {
         this.productFacade = productFacade;
     }
 
-    @PostMapping()
+    @PostMapping
     ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto) {
         return productFacade.create(productRequestDto);
     }
@@ -27,7 +28,7 @@ class ProductEndPoint {
         try {
             ProductResponseDto productResponseDto = productFacade.findById(id);
             return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
-        } catch (NullPointerException e) {
+        } catch (ProductNotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -36,7 +37,7 @@ class ProductEndPoint {
     ResponseEntity<ProductResponseDto> updateProduct(@PathVariable("id") String id, @RequestBody ProductRequestDto productRequestDto) {
         try {
             return new ResponseEntity<>(productFacade.update(id, productRequestDto), HttpStatus.OK);
-        } catch (NullPointerException e) {
+        } catch (ProductNotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
@@ -45,7 +46,7 @@ class ProductEndPoint {
     ResponseEntity<ProductResponseDto> deleteProduct(@PathVariable("id") String id) {
         try {
             return new ResponseEntity<>(productFacade.delete(id), HttpStatus.OK);
-        } catch (NullPointerException e) {
+        } catch (ProductNotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }

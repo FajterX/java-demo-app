@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public final class Product {
     private final String id;
-    private String name;
+    private final String name;
     private final LocalDateTime createdAt;
 
     public Product(String id, String name, LocalDateTime createdAt) {
@@ -48,9 +48,5 @@ public final class Product {
                 ", name='" + name + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

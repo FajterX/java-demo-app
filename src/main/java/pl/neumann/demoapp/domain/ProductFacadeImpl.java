@@ -1,6 +1,7 @@
 package pl.neumann.demoapp.domain;
 
 import org.springframework.stereotype.Component;
+import pl.neumann.demoapp.Exceptions.ProductNotFoundException;
 import pl.neumann.demoapp.infrastructure.ProductRepository;
 
 import java.time.LocalDateTime;
@@ -16,8 +17,11 @@ class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public ProductResponseDto findById(String id) {
+    public ProductResponseDto findById(String id) throws ProductNotFoundException {
         Product product = this.productRepository.findById(id);
+        if(product == null)
+            throw new ProductNotFoundException();
+
         return new ProductResponseDto(product.getId(), product.getName());
     }
 
@@ -42,21 +46,27 @@ class ProductFacadeImpl implements ProductFacade {
     }
 
     @Override
-    public ProductResponseDto update(String id, ProductRequestDto productRequestDto) {
+    public ProductResponseDto update(String id, ProductRequestDto productRequestDto) throws ProductNotFoundException {
         if (!productRequestDto.isValid()) {
             throw new RuntimeException("Product name cannot be empty!");
         }
-
         Product product = this.productRepository.findById(id);
-        product.setName(productRequestDto.getName());
-        product = this.productRepository.update(id, product);
+        if(product == null)
+            throw new ProductNotFoundException();
 
-        return new ProductResponseDto(product.getId(), product.getName());
+        Product changedProduct = new Product(id, productRequestDto.getName(), product.getCreatedAt());
+        this.productRepository.update(id, changedProduct);
+        Product updatedProduct = this.productRepository.findById(id);
+
+        return new ProductResponseDto(updatedProduct.getId(), updatedProduct.getName());
     }
 
     @Override
-    public ProductResponseDto delete(String id) {
+    public ProductResponseDto delete(String id) throws ProductNotFoundException {
         Product product = this.productRepository.remove(id);
+        if(product == null)
+            throw new ProductNotFoundException();
+
         return new ProductResponseDto(product.getId(), product.getName());
     }
 }

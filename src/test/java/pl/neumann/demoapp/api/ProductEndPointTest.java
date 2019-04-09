@@ -17,63 +17,80 @@ import static org.assertj.core.api.Assertions.*;
 public class ProductEndPointTest extends DemoappApplicationTests {
 
     @Autowired
+    private
     ProductFacade productFacade;
 
     @Test
     public void shouldCreateProduct() {
+        //given
         final String url = "http://localhost:" + port + "/products";
         final ProductRequestDto product = new ProductRequestDto("product_name");
         String productJson  = mapToJson(product);
 
+        //when
         ResponseEntity<ProductResponseDto> result = httpClient.postForEntity(url, getHttpRequest(productJson), ProductResponseDto.class);
 
+        //then
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody().getName()).isEqualTo("product_name");
+        assertThat(result.getBody().getId()).isNotEmpty();
     }
 
     @Test
     public void shouldGetExistingProduct() {
+        //given
         ProductRequestDto dto = new ProductRequestDto("produkt");
         ProductResponseDto existingProduct = productFacade.create(dto);
         final String url = "http://localhost:" + port + "/products/" + existingProduct.getId();
 
+        //when
         ResponseEntity<ProductResponseDto> result = httpClient.getForEntity(url, ProductResponseDto.class);
 
+        //then
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody()).isEqualTo(existingProduct);
     }
 
     @Test
     public void shouldRemoveExistingProduct() {
+        //given
         ProductRequestDto dto = new ProductRequestDto("produkt");
         ProductResponseDto existingProduct = productFacade.create(dto);
         final String url = "http://localhost:" + port + "/products/" + existingProduct.getId();
 
-        ResponseEntity<ProductResponseDto> result = httpClient.exchange(url, HttpMethod.DELETE, null, ProductResponseDto.class);
+        //when
+        httpClient.delete(url);
+        ResponseEntity<ProductResponseDto> result = httpClient.getForEntity(url, ProductResponseDto.class);
 
-        assertThat(result.getStatusCodeValue()).isEqualTo(200);
-        assertThat(result.getBody()).isEqualTo(existingProduct);
+        //then
+        assertThat(result.getStatusCodeValue()).isEqualTo(404);
     }
 
     @Test
     public void shouldGetNotExistingProduct() {
+        //given
         final String url = "http://localhost:" + port + "/products/-1";
 
+        //when
         ResponseEntity<ProductResponseDto> result = httpClient.getForEntity(url, ProductResponseDto.class);
 
+        //then
         assertThat(result.getStatusCodeValue()).isEqualTo(404);
     }
 
     @Test
     public void shouldUpdateProduct() {
+        //given
         ProductRequestDto dto = new ProductRequestDto("produkt");
         ProductResponseDto existingProduct = productFacade.create(dto);
         final String url = "http://localhost:" + port + "/products/" + existingProduct.getId();
         ProductRequestDto updatedProduct = new ProductRequestDto("newProdukt");
         String productJson  = mapToJson(updatedProduct);
 
+        //when
         ResponseEntity<ProductResponseDto> result = httpClient.exchange(url, HttpMethod.PUT, getHttpRequest(productJson), ProductResponseDto.class);
 
+        //then
         assertThat(result.getStatusCodeValue()).isEqualTo(200);
         assertThat(result.getBody().getName()).isEqualTo(updatedProduct.getName());
     }
@@ -91,6 +108,4 @@ public class ProductEndPointTest extends DemoappApplicationTests {
         httpHeaders.set("content-type", "application/json");
         return new HttpEntity<>(json, httpHeaders);
     }
-
-    //update delete 404 na get kiedy nie ma produktu
 }

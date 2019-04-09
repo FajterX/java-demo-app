@@ -1,16 +1,13 @@
 package pl.neumann.demoapp.domain;
 
-public interface ProductFacade {
-    // get
+import pl.neumann.demoapp.Exceptions.ProductNotFoundException;
 
-    ProductResponseDto findById(String id);
-    // create
+public interface ProductFacade {
+    ProductResponseDto findById(String id) throws ProductNotFoundException;
 
     ProductResponseDto create(ProductRequestDto productRequestDto);
 
-    // update
-    ProductResponseDto update(String id, ProductRequestDto productRequestDto);
+    ProductResponseDto update(String id, ProductRequestDto productRequestDto) throws ProductNotFoundException;
 
-    // delete
-    ProductResponseDto delete(String id);
+    ProductResponseDto delete(String id) throws ProductNotFoundException;
 }
